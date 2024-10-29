@@ -8,8 +8,10 @@ Route::view("/", "home");
 Route::view("/contact", "contact");
 
 Route::get('/jobs', function () {
+    $jobs = Job::with('employer')->get();
+
     return view('jobs', [
-        'jobs' => Job::all()
+        'jobs' => $jobs
     ]);
 });
 
