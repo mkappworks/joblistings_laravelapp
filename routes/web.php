@@ -8,9 +8,9 @@ Route::view("/", "home");
 Route::view("/contact", "contact");
 
 Route::get('/jobs', function () {
-    $jobs = Job::with('employer')->cursorPaginate(7);
+    $jobs = Job::with('employer')->latest()->simplePaginate(7);
 
-    return view('jobs', [
+    return view('jobs.index', [
         'jobs' => $jobs
     ]);
 });
@@ -21,5 +21,5 @@ Route::get('/jobs/{id}', function ($id) {
         abort(404);
     }
 
-    return view('job', ['job' => $job]);
+    return view('jobs.show', ['job' => $job]);
 });
