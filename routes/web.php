@@ -15,8 +15,16 @@ Route::get('/jobs', function () {
     ]);
 });
 
+Route::get('/jobs/{id}', function ($id) {
+    $job = Job::find($id);
+    if (!$job) {
+        abort(404);
+    }
+
+    return view('jobs.show', ['job' => $job]);
+});
+
 Route::post('/jobs', function () {
-    // validation
     request()->validate([
         'title' => ['required', 'min:3'],
         'salary' => ['required'],
@@ -35,11 +43,37 @@ Route::get('/jobs/create', function () {
     return view('jobs.create');
 });
 
-Route::get('/jobs/{id}', function ($id) {
-    $job = Job::find($id);
-    if (!$job) {
-        abort(404);
-    }
+Route::get('/jobs/{id}/edit', function ($id) {
+    $job = Job::findOrFail($id);
 
-    return view('jobs.show', ['job' => $job]);
+    return view('jobs.edit', [
+        'job' => $job
+    ]);
+});
+
+Route::patch('/jobs/{id}', function ($id) {
+    request()->validate([
+        'title' => ['required', 'min:3'],
+        'salary' => ['required'],
+    ]);
+
+    //TODO:: authorize
+
+    $job = Job::findOrFail($id);
+
+    $job->update([
+        'title' => request('title'),
+        'salary' => request('salary'),
+    ]);
+
+    return redirect('/jobs/' . $job->id);
+});
+
+
+Route::delete('/jobs/{id}', function ($id) {
+    //TODO:: authorize
+
+    Job::findOrFail($id)->delete();
+
+    return redirect('/jobs');
 });
