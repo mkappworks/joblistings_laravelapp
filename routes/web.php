@@ -21,7 +21,8 @@ Route::controller(JobController::class)->group(function () {
         ->middleware('auth')
         ->can('edit', 'job');
     Route::delete('/jobs/{job}', 'destroy')
-        ->middleware(['auth', 'can:edit, job']);
+        ->can('edit', 'job');
+    // ->middleware(['auth', 'can:edit, job']);
 });
 
 // Route::resource('jobs', JobController::class, [
